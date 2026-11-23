@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {Routes, Route, Link, NavLink, useParams, useNavigate, useLocation} from 'react-router-dom'
-import {api, auth, inr} from './api.js'
+import {api, auth, inr, B} from './api.js'
 import {Stars, Skel, ShipBar, CartLines, Drawer, Timeline, FAQ, Newsletter, Chatbot, PRow} from './ui.jsx'
 import {CFG, useGet, SearchBox, NotifyBtn, Offers, Pincode, Compare, QA, Bell, Rewards, Addresses, ReturnBtn, Invoice, Diary, Cookie, BackTop, Crumbs, Password, Banners, AdminPlus} from './extra.jsx'
 
@@ -195,7 +195,7 @@ function Admin() {
   useEffect(() => { if (user?.role === 'admin') refresh() }, [tab])
   if (user?.role !== 'admin') return <div className="wrap page"><p>Admin access only. <Link to="/login">Log in</Link> (demo: admin@menoglow.com / admin123).</p></div>
   const {stats = {}, orders = [], customers = [], coupons = [], reviews = []} = d
-  const upload = async e => { const f = new FormData(); f.append('f', e.target.files[0]); const a = auth.get(); const r = await fetch((import.meta.env.VITE_API || 'http://localhost:8000') + '/admin/upload', {method:'POST', body:f, headers:{Authorization:'Bearer ' + a.access_token}}); setNp({...np, image_url:(await r.json()).url}) }
+  const upload = async e => { const f = new FormData(); f.append('f', e.target.files[0]); const a = auth.get(); const r = await fetch(B + '/admin/upload', {method:'POST', body:f, headers:{Authorization:'Bearer ' + a.access_token}}); setNp({...np, image_url:(await r.json()).url}) }
   const csv = () => { const t = 'id,customer,total,status\n' + orders.map(o => [o.id, o.customer, o.total, o.status].join(',')).join('\n'); const u = URL.createObjectURL(new Blob([t])); Object.assign(document.createElement('a'), {href:u, download:'sales-report.csv'}).click() }
   return <div className="wrap page"><h1>Admin</h1>
     <div className="tabs">{['Dashboard','Products','Orders','Customers','Coupons','Reviews','Analytics','Fulfilment','CRM','Promotions','Content','Support','Settings','Data','Audit','Search'].map(t => <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t}</button>)}</div>

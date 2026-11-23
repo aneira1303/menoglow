@@ -11,6 +11,6 @@ Ivory #FBF8F4, blush #F4E9E7, charcoal #302A28, muted rose #A76F79. Playfair Dis
 Without Razorpay keys, checkout marks orders paid for local testing.
 ## v3 additions
 New tables (points, addresses, alerts, notifications, returns, Q&A, shipments, coupon rules, banners, posts, settings, audit, blocked) are created automatically on backend start. Existing tables are unchanged.
-## Deploy
-Frontend on Vercel (root: frontend, env VITE_API=<backend url>), backend on Render (render.yaml), MySQL on Railway/Aiven.
-Backend env: DATABASE_URL (mysql+pymysql://...), JWT_SECRET, ADMIN_PASSWORD, CORS_ORIGINS (your Vercel URL), RAZORPAY_*, CLOUDINARY_URL.
+## Deploy (one platform: Render)
+Push to GitHub, then Render -> New -> Blueprint. render.yaml builds one Docker service (React + FastAPI) and a free Postgres database.
+Set ADMIN_PASSWORD (before first start), RAZORPAY_* and CLOUDINARY_URL when asked.

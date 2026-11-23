@@ -9,7 +9,10 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 
 SECRET = os.getenv("JWT_SECRET", "dev-secret")
-engine = create_engine(os.getenv("DATABASE_URL", "sqlite:///./menoglow.db"), pool_pre_ping=True)
+DB_URL = os.getenv("DATABASE_URL", "sqlite:///./menoglow.db")
+for old in ("postgres://", "postgresql://"):
+    if DB_URL.startswith(old): DB_URL = "postgresql+psycopg2://" + DB_URL[len(old):]
+engine = create_engine(DB_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 pwd = CryptContext(schemes=["bcrypt"])
@@ -461,3 +464,15 @@ def export(_=Depends(admin), s: Session = Depends(db)):
 
 @app.get("/health")
 def health(): return {"status": "ok"}
+
+# ---- serve the built React app (single-service deployment)
+import pathlib
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+_static = pathlib.Path(__file__).resolve().parent.parent / "static"
+if (_static / "index.html").exists():
+    app.mount("/assets", StaticFiles(directory=_static / "assets"), name="assets")
+    @app.get("/{path:path}", include_in_schema=False)
+    def spa(path: str):
+        f = (_static / path).resolve()
+        return FileResponse(f if path and f.is_file() and _static.resolve() in f.parents else _static / "index.html")

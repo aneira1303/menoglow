@@ -1,4 +1,4 @@
-const B = import.meta.env.VITE_API || 'http://localhost:8000'
+export const B = import.meta.env.VITE_API || (import.meta.env.PROD ? '' : 'http://localhost:8000')
 export const auth = { get: () => JSON.parse(localStorage.getItem('mg_auth') || 'null'), set: v => v ? localStorage.setItem('mg_auth', JSON.stringify(v)) : localStorage.removeItem('mg_auth') }
 export async function api(path, { method = 'GET', body } = {}) {
   const a = auth.get()

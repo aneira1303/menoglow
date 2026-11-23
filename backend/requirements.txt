@@ -9,3 +9,4 @@ bcrypt==4.0.1
 razorpay
 cloudinary
 python-multipart
+psycopg2-binary
